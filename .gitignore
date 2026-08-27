@@ -1,0 +1,5 @@
+computorv1
+*.o
+*.out
+*.a
+obj
