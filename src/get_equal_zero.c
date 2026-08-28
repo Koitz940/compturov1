@@ -9,12 +9,12 @@ pol* get_equal_zero(char* string) {
     while (i < len) {
         if (string[i] == '=') {
             if (!i || string[i - 1] != ' ') {
-                ft_putstr_fd("Invalid left hand side", 2);
+                error("Invalid left hand side");
                 return NULL;
             }
             string[i - 1] = 0;
             if (string[i + 1] != ' ') {
-                ft_putstr_fd("Invalid right hand side", 2);
+                error("Invalid right hand side");
                 return NULL;
             }
             l = string;
@@ -24,7 +24,7 @@ pol* get_equal_zero(char* string) {
         i++;
     } 
     if (!l || !r) {
-        ft_putstr_fd("NO = sign given, not an equation", 2);
+        error("NO = sign given, not an equation");
         return NULL;
     }
 

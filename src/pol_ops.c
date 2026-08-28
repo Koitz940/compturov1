@@ -18,22 +18,22 @@ static void correct_degree(pol *p)
 pol *pol_sum(pol *p, pol *g)
 {
 	if (!p || !g) {
-		ft_putendl_fd("Null ptr passed to summing", 2);
+		error("Null ptr passed to summing");
 		return NULL;
 	}
 
-	pol *res = calloc(sizeof(pol), 1);
+	pol *res = calloc(1, sizeof(pol));
 	if (!res) {
-		ft_putendl_fd("Memory allocation failed", 2);
+		error("Memory allocation failed");
 		return NULL;
 	}
 
 	size_t min_deg = p->min_deg < g->min_deg ? p->min_deg: g->min_deg;
 	size_t deg = p->deg > g->deg ? p->deg: g->deg;
-	double *poly = calloc(sizeof(double), (deg - min_deg + 1));
+	double *poly = calloc((deg - min_deg + 1), sizeof(double));
 	if (!poly) {
 		free(res);
-		ft_putendl_fd("Memory allocation failed", 2);
+		error("Memory allocation failed");
 		return NULL;
 	}
 
@@ -59,20 +59,20 @@ pol *pol_sum(pol *p, pol *g)
 pol *pol_neg(pol *p)
 {
 	if (!p) {
-		ft_putendl_fd("Null ptr passed to negating", 2);
+		error("Null ptr passed to negating");
 		return NULL;
 	}
 
-	pol *res = calloc(sizeof(pol), 1);
+	pol *res = calloc(1, sizeof(pol));
 	if (!res) {
-		ft_putendl_fd("Memory allocation failed", 2);
+		error("Memory allocation failed");
 		return NULL;
 	}
 
-	double *poly = calloc(sizeof(double), (p->deg + 1 - p->min_deg));
+	double *poly = calloc((p->deg + 1 - p->min_deg), sizeof(double));
 	if (!poly) {
 		free(res);
-		ft_putendl_fd("Memory allocation failed", 2);
+		error("Memory allocation failed");
 		return NULL;
 	}
 
@@ -88,12 +88,12 @@ pol *pol_neg(pol *p)
 pol *pol_sub(pol *p, pol *g)
 {
 	if (!p || !g) {
-		ft_putendl_fd("Null ptr passed to subtracting", 2);
+		error("Null ptr passed to subtracting");
 		return NULL;
 	}
 
 	pol *h = pol_neg(g);
-	if (!h)
+	if (!h) 
 		return NULL;
 
 	pol *res = pol_sum(p, h);
@@ -105,22 +105,22 @@ pol *pol_sub(pol *p, pol *g)
 pol *pol_mul(pol *p, pol *g)
 {
 	if (!p || !g) {
-		ft_putendl_fd("Null ptr passed to multiplying", 2);
+		error("Null ptr passed to multiplying");
 		return NULL;
 	}
 
 	size_t deg = p->deg + g->deg;
 	size_t min_deg = p->min_deg > g->min_deg ? p->min_deg: g->min_deg;
-	pol *res = calloc(sizeof(pol), 1);
+	pol *res = calloc(1, sizeof(pol));
 	if (!res) {
-		ft_putendl_fd("Memory allocation failed", 2);
+		error("Memory allocation failed");
 		return NULL;
 	}
 
-	double *poly = calloc(sizeof(double), (deg - min_deg + 1));
+	double *poly = calloc((deg - min_deg + 1), sizeof(double));
 	if (!poly) {
 		free(res);
-		ft_putendl_fd("Memory allocation failed", 2);
+		error("Memory allocation failed");
 		return NULL;
 	}
 
@@ -143,16 +143,16 @@ pol *pol_mul(pol *p, pol *g)
 
 pol *monomial(size_t deg, double coef)
 {
-	pol *p = calloc(sizeof(pol), 1);
+	pol *p = calloc(1, sizeof(pol));
 	if (!p) {
-		ft_putendl_fd("Memory allocation failed", 2);
+		error("Memory allocation failed");
 		return NULL;
 	}
 
-	double *poly = calloc(sizeof(double), 1);
+	double *poly = calloc(1, sizeof(double));
 	if (!poly) {
 		free(p);
-		ft_putendl_fd("Memory allocation failed", 2);
+		error("Memory allocation failed");
 		return NULL;
 	}
 
@@ -204,20 +204,20 @@ pol *pol_mul_free(pol *p, pol *g)
 
 pol *pol_copy(pol *p)
 {
-	pol *res = calloc(sizeof(pol), 1);
+	pol *res = calloc(1, sizeof(pol));
 
 	if (!res) {
-		ft_putendl_fd("Memory allocation failed", 2);
+		error("Memory allocation failed");
 		return NULL;
 	}
 
 	res->deg = p->deg;
 	res->min_deg = p->min_deg;
 
-	double *poly = calloc(sizeof(double),(res->deg - res->min_deg + 1));
+	double *poly = calloc((res->deg - res->min_deg + 1), sizeof(double));
 	if (!poly) {
 		free(res);
-		ft_putendl_fd("Memory allocation failed", 2);
+		error("Memory allocation failed");
 		return (NULL);
 	}
 

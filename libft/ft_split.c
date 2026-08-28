@@ -105,7 +105,7 @@ char	**ft_split(char const *s, char c)
 	return (ft_actual(result, i));
 }
 
-static size_t ft_splitlen(void **s) {
+size_t ft_splitlen(char **s) {
 	size_t i = 0;
 	while (s[i])
 		i++;

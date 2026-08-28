@@ -13,11 +13,11 @@ int main(int argc, char** argv) {
             expression = ft_strdup(argv[1]);
             break;
         default:
-            ft_putstr_fd("Too many input arguments\n", 2);
+            error("Too many input arguments");
             return 1;;
         }
         if (!expression) {
-            ft_putstr_fd("Failed memory allocation\n", 2);
+            error("Failed memory allocation");
             return 1;
     }
 

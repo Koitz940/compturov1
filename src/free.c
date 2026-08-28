@@ -27,7 +27,7 @@ void free_split(char** s) {
 	free(s);
 }
 
-void free_arr_fun(void** arr, void (*del)(void *)) {
+void free_node_arr(node** arr, void (*del)(node *)) {
     while (*arr) {
 		del(*arr);
         arr++;

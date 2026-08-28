@@ -3,49 +3,58 @@
 node*   get_tree(char* exp) {
 	char** letters = ft_split(exp, ' ');
 	if (!letters) {
-		ft_putendl_fd("Memory allocation failed", 2);
+		error("Memory allocation failed");
 		return NULL;
 	}
 
-	if (!ft_splitlen(letters)) 
-		ft_putendl_fd("One of the 2 sides of the equation is empty", 2);{
+	if (!ft_splitlen(letters)) {
+		error("One of the 2 sides of the equation is empty");
 		free(letters);
 		return NULL;
 	}
 
-	node** partial = calloc(sizeof(node*), (ft_strlen(exp) + 1));
+	node** partial = calloc((ft_strlen(exp) + 1), sizeof(node*));
 	if (!partial)
 		return NULL;
 	ft_bzero(partial, sizeof(node*) * (ft_strlen(exp) + 1));
 
 	size_t i = 0;
-	double tmp;
-	int status;
 	size_t len;
-	node* node;
-	pol* p;
 	while (letters[i]) {
 		len = ft_strlen(letters[i]);
 		if (!len) {
+			error("Bad empty weird symbol on equation");
 			free_split(letters);
-			free_arr_fun(partial, free_node);
+			free_node_arr(partial, free_node);
 			return NULL;
 		}
-		if (ft_isdigit(*(letters[i]))) {
-			status = get_num(letters[i], &tmp);
-			if (status) {
-				free_split(letters);
-				free_arr_fun(partial, free_node);
-				return NULL;
-			}
-			p = monomial(0, tmp);
-			if (!p) {
-				free_split(letters);
-				free_arr_fun(partial, free_node);
-				return NULL;
-			}
-			node = calloc();
+		if (ft_isdigit(*(letters[i])) && create_num(letters[i], partial, i)) {
+			free_split(letters);
+			free_node_arr(partial, free_node);
+			return NULL;
+		} else if (*letters[i] == '+' && create_sum(len, partial, i, letters[i])) {
+			free_split(letters);
+			free_node_arr(partial, free_node);
+			return NULL;
+		} else if (*letters[i] == '*' && create_mul(len, partial, i, letters[i])) {
+			free_split(letters);
+			free_node_arr(partial, free_node);
+			return NULL;
+		} else if (*letters[i] == '-' && create_sub(len, partial, i, letters[i])) {
+			free_split(letters);
+			free_node_arr(partial, free_node);
+			return NULL;
+		} else if ((*letters[i] == 'x' || *letters[i] == 'X') && create_monomial(letters[i], partial, i)) {
+			free_split(letters);
+			free_node_arr(partial, free_node);
+			return NULL;
+		} else {
+			bad_char("Bad symbol on equation", *letters[i]);
+			free_split(letters);
+			free_node_arr(partial, free_node);
+			return NULL;
 		}
+		i++;
 	}
 	free_split(letters);
 	return NULL;
@@ -85,7 +94,7 @@ pol*    expand(node* tree) {
 			break;
 
 		default:
-			ft_putendl_fd("Bad code had bad node type", 2);
+			error("Bad code had bad node type");
 	}
 
 	free_pol(l);

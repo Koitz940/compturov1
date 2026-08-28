@@ -67,6 +67,6 @@ void	ft_lstdelone(t_list *lst, void (*del)(void *));
 int		ft_lstsize(t_list *lst);
 char	*get_next_line(int fd);
 
-static size_t ft_splitlen(void **s);
+size_t ft_splitlen(char **s);
 
 #endif
