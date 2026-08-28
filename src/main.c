@@ -126,4 +126,34 @@ int main(int argc, char** argv) {
     printf("\n");
     printf("%lu, %lu\n", f->deg, f->min_deg);
     free_pol(f);
+
+    f = monomial(10, 2.);
+    show_pol(f);
+    printf("\n");
+    printf("%lu, %lu\n", f->deg, f->min_deg);
+    free_pol(f);
+
+    f = monomial(5, 1.);
+    show_pol(f);
+    printf("\n");
+    printf("%lu, %lu\n", f->deg, f->min_deg);
+    free_pol(f);
+
+    f = monomial(10, -1.);
+    show_pol(f);
+    printf("\n");
+    printf("%lu, %lu\n", f->deg, f->min_deg);
+    free_pol(f);
+
+    f = monomial(1, 1.);
+    show_pol(f);
+    printf("\n");
+    printf("%lu, %lu\n", f->deg, f->min_deg);
+    free_pol(f);
+
+    f = monomial(10, 0);
+    show_pol(f);
+    printf("\n");
+    printf("%lu, %lu\n", f->deg, f->min_deg);
+    free_pol(f);
 } */

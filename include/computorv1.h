@@ -4,6 +4,8 @@
 # include <stdio.h>
 # include "libft.h"
 # include <math.h>
+# include <stdlib.h>
+# include <errno.h>
 
 # define DELTA = (int)(-12652)
 
@@ -36,6 +38,7 @@ pol*    expand(node* tree);
 void    free_node(node* tree);
 void    free_pol(pol* p);
 void	free_split(char** s);
+void    free_arr_fun(void** arr, void (*del)(void *));
 
 //Polynomial operations
 pol*    pol_sum(pol* p, pol* g);
@@ -55,5 +58,11 @@ pol*	pol_copy(pol* p);
 void    show_results(pol* p);
 void    show_pol(pol* p);
 void    print_solution(double sol, int symbol);
+
+//reading equation
+int     get_num(char* str, double* num);
+
+//error
+void    error(char* reason);
 
 #endif

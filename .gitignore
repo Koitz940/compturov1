@@ -4,3 +4,4 @@ computorv1
 *.a
 obj
 .vscode
+*test*

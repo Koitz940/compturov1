@@ -104,3 +104,10 @@ char	**ft_split(char const *s, char c)
 	result[i] = NULL;
 	return (ft_actual(result, i));
 }
+
+static size_t ft_splitlen(void **s) {
+	size_t i = 0;
+	while (s[i])
+		i++;
+	return i;
+}

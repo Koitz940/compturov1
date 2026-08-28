@@ -22,6 +22,15 @@ void free_pol(pol* p) {
 void free_split(char** s) {
 	while (*s) {
 		free(*s);
+        s++;
 	}
 	free(s);
+}
+
+void free_arr_fun(void** arr, void (*del)(void *)) {
+    while (*arr) {
+		del(*arr);
+        arr++;
+	}
+	free(arr);
 }
