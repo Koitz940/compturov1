@@ -5,6 +5,8 @@
 # include "libft.h"
 # include <math.h>
 
+# define DELTA = (int)(-12652)
+
 enum expr {
     POL,
     SUM,
@@ -14,6 +16,7 @@ enum expr {
 
 typedef struct polynomial {
     size_t deg;
+    size_t min_deg;
     double* poly;
 }   pol;
 
@@ -45,11 +48,12 @@ pol*    pol_sub_free(pol* p, pol* g);
 pol*    pol_neg_free(pol* p);
 pol*    pol_mul_free(pol* p, pol* g);
 
-pol*    monomial(size_t deg);
+pol*    monomial(size_t deg, double coef);
 pol*	pol_copy(pol* p);
 
 //show results
 void    show_results(pol* p);
 void    show_pol(pol* p);
+void    print_solution(double sol, int symbol);
 
 #endif

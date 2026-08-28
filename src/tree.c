@@ -1,12 +1,12 @@
 #include "computorv1.h"
 
 node*   get_tree(char* exp) {
-	char** letters = split(expr);
+	char** letters = ft_split(exp, ' ');
 	if (!letters) {
 		return NULL;
 	}
-	
-	
+
+	return NULL;
 }
 
 pol*    expand(node* tree) {
