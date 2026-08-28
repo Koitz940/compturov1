@@ -7,14 +7,14 @@ pol* get_equal_zero(char* string) {
     char* r = NULL;
 
     while (i < len) {
-        if (*(string + i) == '=') {
-            if (!i || *(string  + i - 1) != ' ') {
+        if (string[i] == '=') {
+            if (!i || string[i - 1] != ' ') {
                 ft_putstr_fd("Invalid left hand side", 2);
                 return NULL;
             }
-            *(string  + i - 1) = 0;
-            if (i + 1 == len || *(string  + i + 1) != ' ') {
-                ft_putstr_fd("Invalid left hand side", 2);
+            string[i - 1] = 0;
+            if (string[i + 1] != ' ') {
+                ft_putstr_fd("Invalid right hand side", 2);
                 return NULL;
             }
             l = string;
@@ -46,5 +46,5 @@ pol* get_equal_zero(char* string) {
         return NULL;
     }
 
-    return sub_pol(left_full, right_full);
+    return pol_sub_free(left_full, right_full);
 }

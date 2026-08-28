@@ -4,7 +4,7 @@ CC = cc
 CFLAGS = -Wall -Werror -Wextra
 RM = rm -f
 
-SRC = main.c free.c get_equal_zero.c pol_ops.cs
+SRC = main.c free.c get_equal_zero.c pol_ops.c show.c tree.c
 
 LIBFT_DIR = libft
 INCLUDE_DIR	= include
@@ -25,8 +25,7 @@ obj/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< $(INCLUDES) -o $@
 
 $(NAME): $(LIBFT) $(OBJECTS)
-	$(CC) $(CFLAGS) $(OBJECTS) $(LIBFT) -o $@ 
-
+	$(CC) $(CFLAGS) $(OBJECTS) $(LIBFT) -lm -o $@
 $(LIBFT):
 	$(MAKE) -C $(LIBFT_DIR)
 

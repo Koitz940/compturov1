@@ -3,3 +3,4 @@ computorv1
 *.out
 *.a
 obj
+.vscode

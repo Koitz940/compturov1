@@ -1,6 +1,8 @@
 #include "computorv1.h"
 
 void free_node(node* tree) {
+	if (!tree)
+		return;
     if (tree->left) {
         free_node(tree->left);
     }
@@ -11,6 +13,15 @@ void free_node(node* tree) {
 }
 
 void free_pol(pol* p) {
+	if (!p)
+		return;
     free(p->poly);
     free(p);
+}
+
+void free_split(char** s) {
+	while (*s) {
+		free(*s);
+	}
+	free(s);
 }
