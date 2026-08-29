@@ -1,7 +1,9 @@
 computorv1
+computorv1_bonus
 *.o
 *.out
 *.a
 obj
+obj_bonus
 .vscode
 *test*

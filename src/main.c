@@ -8,6 +8,9 @@ int main(int argc, char** argv) {
     {
         case 1:
             expression = get_next_line(0);
+			char* c = expression + ft_strlen(expression) - 1;
+			if (*c == '\n') 
+				*c = 0;
             break;
         case 2:
             expression = ft_strdup(argv[1]);

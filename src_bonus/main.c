@@ -1,0 +1,42 @@
+#include "computorv1_bonus.h"
+
+int main() {
+    char* expression;
+    pol* expanded;
+	char* final;
+
+    switch (argc)
+    {
+        case 1:
+            expression = get_next_line(0);
+			char* c = expression + ft_strlen(expression) - 1;
+			if (*c == '\n') 
+				*c = 0;
+            break;
+        case 2:
+            expression = ft_strdup(argv[1]);
+            break;
+        default:
+            error("Too many input arguments");
+            return FAILURE;
+        }
+        if (!expression) {
+            error("Failed memory allocation");
+            return FAILURE;
+    }
+	if (!expression) {
+		error("Memory allocation failed");
+		return FAILURE;
+	}
+
+	final = correct(expression);
+	free(expression)
+	if (!final)
+		return FAILURE;
+    expanded = get_equal_zero(expression);
+	free(expression);
+    if (!expanded)
+        return FAILURE;
+    show_results(expanded);
+	free_pol(expanded);
+}
