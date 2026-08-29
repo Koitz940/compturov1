@@ -20,9 +20,11 @@ int main(int argc, char** argv) {
             error("Failed memory allocation");
             return 1;
     }
-
+	if (!expression) {
+		error("Memory allocation failed");
+	}
     expanded = get_equal_zero(expression);
-    free(expression);
+	free(expression);
     if (!expanded)
         return 1;
     show_results(expanded);

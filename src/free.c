@@ -9,6 +9,9 @@ void free_node(node* tree) {
     if (tree->right) {
         free_node(tree->right);
     }
+	if (tree->p) {
+		free_pol(tree->p);
+	}
     free(tree);
 }
 
@@ -20,17 +23,19 @@ void free_pol(pol* p) {
 }
 
 void free_split(char** s) {
-	while (*s) {
-		free(*s);
-        s++;
+	size_t i = 0;
+	while (s[i]) {
+		free(s[i]);
+        i++;
 	}
 	free(s);
 }
 
 void free_node_arr(node** arr, void (*del)(node *)) {
-    while (*arr) {
-		del(*arr);
-        arr++;
+	size_t i = 0;
+    while (arr[i]) {
+		del(arr[i]);
+        i++;
 	}
 	free(arr);
 }

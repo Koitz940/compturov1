@@ -88,8 +88,11 @@ int create_monomial(char* str, node** partial, size_t i) {
 	else if (str[1] != '^') {
 		bad_char("Bad exponent sign", str[1]);
 		return 1;
+	} else if (!ft_isdigit(str[2])) {
+		bad_char("Bad exponent number", str[2]);
+		return 1;
 	}
-	if (get_exp(str, &exp))
+	else if (get_exp(str + 2, &exp))
 		return 1;
 
 	p = monomial(exp, 1.);

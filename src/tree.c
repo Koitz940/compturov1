@@ -13,10 +13,12 @@ node*   get_tree(char* exp) {
 		return NULL;
 	}
 
-	node** partial = calloc((ft_strlen(exp) + 1), sizeof(node*));
-	if (!partial)
+	node** partial = calloc((ft_strlen(exp) * 2), sizeof(node*));
+	if (!partial) {
+		free_split(letters);
 		return NULL;
-	ft_bzero(partial, sizeof(node*) * (ft_strlen(exp) + 1));
+	}
+	ft_bzero(partial, sizeof(node*) * (ft_strlen(exp) * 2));
 
 	size_t i = 0;
 	size_t len;
@@ -28,26 +30,36 @@ node*   get_tree(char* exp) {
 			free_node_arr(partial, free_node);
 			return NULL;
 		}
-		if (ft_isdigit(*(letters[i])) && create_num(letters[i], partial, i)) {
-			free_split(letters);
-			free_node_arr(partial, free_node);
-			return NULL;
-		} else if (*letters[i] == '+' && create_sum(len, partial, i, letters[i])) {
-			free_split(letters);
-			free_node_arr(partial, free_node);
-			return NULL;
-		} else if (*letters[i] == '*' && create_mul(len, partial, i, letters[i])) {
-			free_split(letters);
-			free_node_arr(partial, free_node);
-			return NULL;
-		} else if (*letters[i] == '-' && create_sub(len, partial, i, letters[i])) {
-			free_split(letters);
-			free_node_arr(partial, free_node);
-			return NULL;
-		} else if ((*letters[i] == 'x' || *letters[i] == 'X') && create_monomial(letters[i], partial, i)) {
-			free_split(letters);
-			free_node_arr(partial, free_node);
-			return NULL;
+		if (ft_isdigit(*(letters[i]))) {
+			if (create_num(letters[i], partial, i)) {
+				free_split(letters);
+				free_node_arr(partial, free_node);
+				return NULL;
+			}
+		} else if (*letters[i] == '+') {
+			if (create_sum(len, partial, i, letters[i])) {
+				free_split(letters);
+				free_node_arr(partial, free_node);
+				return NULL;
+			}
+		} else if (*letters[i] == '*') {
+			if (create_mul(len, partial, i, letters[i])) {
+				free_split(letters);
+				free_node_arr(partial, free_node);
+				return NULL;
+			}
+		} else if (*letters[i] == '-') {
+			if (create_sub(len, partial, i, letters[i])) {
+				free_split(letters);
+				free_node_arr(partial, free_node);
+				return NULL;
+			}
+		} else if (*letters[i] == 'x' || *letters[i] == 'X') {
+			if (create_monomial(letters[i], partial, i)) {
+				free_split(letters);
+				free_node_arr(partial, free_node);
+				return NULL;
+			}
 		} else {
 			bad_char("Bad symbol on equation", *letters[i]);
 			free_split(letters);
@@ -57,7 +69,7 @@ node*   get_tree(char* exp) {
 		i++;
 	}
 	free_split(letters);
-	return NULL;
+	return compress(partial);
 }
 
 pol*    expand(node* tree) {
