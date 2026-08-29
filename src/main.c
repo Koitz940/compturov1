@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
             break;
         default:
             error("Too many input arguments");
-            return 1;;
+            return 1;
         }
         if (!expression) {
             error("Failed memory allocation");
@@ -22,13 +22,14 @@ int main(int argc, char** argv) {
     }
 	if (!expression) {
 		error("Memory allocation failed");
+		return 1;
 	}
     expanded = get_equal_zero(expression);
 	free(expression);
     if (!expanded)
         return 1;
     show_results(expanded);
-    free(expanded);
+	free_pol(expanded);
 }
 
 

@@ -110,7 +110,7 @@ pol *pol_mul(pol *p, pol *g)
 	}
 
 	size_t deg = p->deg + g->deg;
-	size_t min_deg = p->min_deg > g->min_deg ? p->min_deg: g->min_deg;
+	size_t min_deg = p->min_deg + g->min_deg;
 	pol *res = calloc(1, sizeof(pol));
 	if (!res) {
 		error("Memory allocation failed");

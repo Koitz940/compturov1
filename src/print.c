@@ -8,7 +8,7 @@ void show_pol(pol* p) {
     size_t count = p->deg - p->min_deg + 1;
     int first = 1;
 
-    for (size_t i = 0; i < count; i++) {
+    for (size_t i = count - 1; i + 1 != 0; i--) {
         double coeff = p->poly[i];
         if (coeff == 0.0) 
             continue;

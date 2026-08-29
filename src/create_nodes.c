@@ -14,6 +14,7 @@ int create_num(char* str, node** partial, size_t i) {
 
 	tree = calloc(1, sizeof(node));
 	if (!tree) {
+		error("Memory allocation failed");
 		free_pol(p);
 		return 1;
 	}

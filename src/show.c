@@ -18,7 +18,7 @@ static void solve_linear(pol* p) {
 		a = p->poly[0];
 		b = p->poly[1];
 	}
-    double sol = a / b;
+    double sol = -a / b;
 
 
 	printf("Got a linear polynomial\nSolution is:\n");
@@ -49,10 +49,16 @@ static void solve_quad(pol* p) {
 			break;
 	}
 
+	if (a < 0) {
+		a = -a;
+		b = -b;
+		c = -c;
+	}
+
 	printf("Got a quadratic polynomial\n");
 
 	double d = b * b - 4 * a * c;
-	printf("Δ = %g", d);
+	printf("Δ = %g\n", d);
 
 	double r;
 	if (d == 0.) {
@@ -65,12 +71,12 @@ static void solve_quad(pol* p) {
 		print_solution(-b / (2 * a), 'x');
 		printf(" + ");
 		r = sqrt(-d);
-    	printf("%g", r);
+    	printf("%g", r / (2 * a));
 		printf("i\n");
 
 		print_solution(-b / (2 * a), 'x');
 		printf(" - ");
-		printf("%g", r);
+		printf("%g", r / (2 * a));
 		printf("i\n");
 	} else {
 		printf("positive discriminant, solutions are:\n");
@@ -86,7 +92,7 @@ static void solve_quad(pol* p) {
 void    show_results(pol* p) {
     printf("Reduced form: ");
     show_pol(p);
-    printf("\n");
+    printf(" = 0\n");
 
     switch (p->deg)
     {
@@ -114,6 +120,4 @@ void    show_results(pol* p) {
             printf("Resulted polynomial is of degree %lu, which is greater than 4, there is no closed solution for polynomials of degree 5 or higher, lookup Galois Theory for more info\n", p->deg);
             break;
     }
-
-    free_pol(p);
 }

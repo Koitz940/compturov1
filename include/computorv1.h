@@ -34,8 +34,9 @@ typedef struct node {
 
 //General code flow
 pol*    get_equal_zero(char* string);
-node*   get_tree(char* exp);
+node*	get_tree(char* exp);
 pol*    expand(node* tree);
+node*	compress(node** list);
 
 //free me from this hell that I put mysef on, actually tho why am I here
 void    free_node(node* tree);
@@ -75,5 +76,9 @@ int		create_monomial(char* str, node** partial, size_t i);
 //error
 void    error(char* reason);
 void	bad_char(char* reason, char c);
+
+//Binary trees
+node*	copy_node(node* n);
+char	node_type(node* n);
 
 #endif
