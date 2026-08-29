@@ -67,15 +67,20 @@ static void solve_quad(pol* p) {
 		printf("\n");
 	} else if (d < 0.) {
 		printf("negative discriminant, solutions (complex conjugates) are:\n");
-
-		print_solution(-b / (2 * a), 'x');
-		printf(" + ");
 		r = sqrt(-d);
+		d = -b / (2 * a);
+
+		if (d != 0) {
+			print_solution(d, 'x');
+			printf(" + ");
+		}
     	printf("%g", r / (2 * a));
 		printf("i\n");
 
-		print_solution(-b / (2 * a), 'x');
-		printf(" - ");
+		if (d != 0) {
+			print_solution(d, 'x');
+			printf(" - ");
+		}
 		printf("%g", r / (2 * a));
 		printf("i\n");
 	} else {
