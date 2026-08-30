@@ -10,6 +10,7 @@
 # include <stddef.h>
 # include <stdint.h>
 # include <ctype.h>
+# include <limits.h>
 
 # define DELTA = (int)(-12652)
 
@@ -96,7 +97,7 @@ node*	copy_node(node* n);
 char	node_type(node* n);
 
 //str
-int	add_to_str(size_t *i, t_str *str, char* raw)
+int	add_to_str(size_t *i, t_str *str, char* raw);
 int	extend(t_str *str);
 int add_char(t_str* str, char c);
 int append_num(char* input, size_t* i, t_str* buf);
@@ -109,5 +110,7 @@ int isop(char c);
 int isvar(char c);
 int isvalid(char c);
 int isvalidnum(char c);
+int accepts_implied(char c);
+int isspecialnum(char c);
 
 #endif

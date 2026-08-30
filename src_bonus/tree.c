@@ -38,7 +38,7 @@ node*   get_tree(char* exp) {
 		return NULL;
 	}
 
-	node** partial = calloc((ft_strlen(letters) * 2), sizeof(node*));
+	node** partial = calloc((ft_splitlen(letters) * 2), sizeof(node*));
 	if (!partial) {
 		free_split(letters);
 		return NULL;
@@ -47,7 +47,7 @@ node*   get_tree(char* exp) {
 
 	size_t i = 0;
 	size_t len;
-	size_t bracket = 0;
+	//size_t bracket = 0;
 	while (letters[i]) {
 		len = ft_strlen(letters[i]);
 		//printf("%s\n", letters[i]);

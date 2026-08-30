@@ -9,7 +9,8 @@ SRC 		= main.c free.c get_equal_zero.c pol_ops.c show.c tree.c print.c \
 SRC_DIR 	= src
 SRCS 		= $(addprefix $(SRC_DIR)/, $(SRC))
 
-SRC_BONUS 	= main.c parsing.c str.c tree.c error.c
+SRC_BONUS 	= parsing.c str.c main.c free.c get_equal_zero.c pol_ops.c show.c tree.c print.c \
+			get_token.c error.c create_nodes.c
 SRC_DIR_BONUS = src_bonus
 SRCS_BONUS 	= $(addprefix $(SRC_DIR_BONUS)/, $(SRC_BONUS))
 

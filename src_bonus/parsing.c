@@ -20,15 +20,23 @@ int isespop(char c) {
 }
 
 int isvar(char c) {
-	return input[i] == 'x' || input[i] == 'X';
-}
+	return c == 'x' || c == 'X';
+} 
 
 int isvalid(char c) {
-	return isop(c) || isespop(c) || isvar(c) || c == '=' || isbracket(c) || isvalidnum(c);
+	return isop(c) || isespop(c) || isvar(c) || c == '=' || isbracket(c) || isvalidnum(c) || isspecialnum(c);
 }
 
 int isvalidnum(char c) {
 	return ft_isdigit(c) || c == '.';
+}
+
+int isspecialnum(char c) {
+	return c == 'e' || c == 'p';
+}
+
+int accepts_implied(char c) {
+	return c == '(' || isvar(c) || isspecialnum(c);
 }
 
 int append_num(char* input, size_t* i, t_str* buf) {
@@ -37,8 +45,8 @@ int append_num(char* input, size_t* i, t_str* buf) {
 	while (input[*i] && isvalidnum(input[*i])) {
 		if (input[*i] == '.') {
 			if (saw_dot) {
-				error("Bad number, found decimal number with 2 decimal points")
-				free(buf.str);
+				error("Bad number, found decimal number with 2 decimal points");
+				free(buf->str);
 				return FAILURE;
 			}
 			saw_dot = 1;
@@ -51,7 +59,7 @@ int append_num(char* input, size_t* i, t_str* buf) {
 	while (isspace(input[*i]))
 			(*i)++;
 
-	if (isvar(input[*i]) || c == '(') {
+	if (accepts_implied(input[*i])) {
 		if (add_char(buf, ' '))
 			return FAILURE;
 
@@ -64,7 +72,7 @@ int append_num(char* input, size_t* i, t_str* buf) {
 
 int append_point(char* input, size_t* i, t_str* buf) {
 	if (!isdigit(input[*i + 1])) {
-		free(buf.str);
+		free(buf->str);
 		error("I am NOT accepting `.' as a shorthand for 0.0, and I shouldn't accept 0. or .0 either");
 	}
 
@@ -75,10 +83,12 @@ char* parse(char* input) {
 	t_str buf;
 	size_t bracket = 0;
 	int last_op = 1;
-	int last_raise = 0;
+	int last_unary = 0;
 
 	buf.str = calloc(1000, sizeof(char));
-	if (buf.str) {
+	buf.capacity = 1000;
+	buf.len = 0;
+	if (!buf.str) {
 		error("Memory allocation failed");
 		return NULL;
 	}
@@ -92,6 +102,7 @@ char* parse(char* input) {
 				return NULL;
 
 			last_op = 0;
+			last_unary = 0;
 		} 
 
 		else if (input[i] == '.') {
@@ -99,33 +110,58 @@ char* parse(char* input) {
 				return NULL;
 
 			last_op = 0;
+			last_unary = 0;
 		}
 		
-		else if (isop(input[i]) || c == '(') {
+		else if (isop(input[i]) || input[i] == '(') {
 			if (add_to_str(&i, &buf, input)) 
 				return NULL;
 
-			if (c == '(')
+			if (input[i - 1] == '(')
 				bracket++;
 			last_op = 1;
+			last_unary = 0;
 		} 
 
-		else if (isvar(x)) {
-			if (add_char(&buf, 'x')) 
+		else if (isvar(input[i]) || isspecialnum(input[i])) {
+			if (isvar(input[i]) && add_char(&buf, 'x')) 
+				return NULL;
+
+			if (isspecialnum(input[i]) && add_char(&buf, input[i])) 
 				return NULL;
 			
-			i++
+			i++;
 			last_op = 0;
+
+			while (isspace(input[i]))
+				i++;
+			
+			if (accepts_implied(input[i])) {
+				if (add_char(&buf, ' '))
+					return NULL;
+
+				if (add_char(&buf, 'X')) 
+					return NULL;
+			}
+
+			last_unary = 0;
 		}
 
-		else if (isesop(input[i]) ||) {
-			if (last_op)
+		else if (isespop(input[i])) {
+			if (last_op) {
+				if (last_unary) {
+					bad_char("Multiple unary operators in a row, unexpected sign", input[i]);
+					free(buf.str);
+					return NULL;
+				}
 				input[i] = (input[i] == '+'? '|': '_');
+				last_unary = 1;
+			}
 
 			if (add_to_str(&i, &buf, input)) 
 				return NULL;
 			
-			last_op = 1
+			last_op = 1;
 		} 
 
 		else if (input[i] == ')') {
@@ -139,6 +175,18 @@ char* parse(char* input) {
 			}
 
 			bracket--;
+
+			while (isspace(input[i]))
+				i++;
+			
+			if (accepts_implied(input[i])) {
+				if (add_char(&buf, ' '))
+					return NULL;
+
+				if (add_char(&buf, 'X')) 
+					return NULL;
+			}
+			last_unary = 0;
 		} 
 
 		else if (input[i] == '=') {
@@ -150,6 +198,7 @@ char* parse(char* input) {
 				free(buf.str);
 				return (NULL);
 			}
+			last_unary = 0;
 		}
 
 		else {
