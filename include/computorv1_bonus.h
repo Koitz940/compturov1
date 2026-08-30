@@ -1,5 +1,5 @@
-#ifndef COMPUTORV_H
-# define COMPUTORV_H
+#ifndef COMPUTORV_BONUS_H
+# define COMPUTORV_BONUS_H
 
 # include <stdio.h>
 # include "libft.h"
@@ -19,8 +19,8 @@ enum expr {
     SUM,
 	SUB,
     MULT,
+	BIG_MULT,
 	NEG,
-	SOM,
 };
 
 enum {

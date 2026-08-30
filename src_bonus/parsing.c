@@ -156,6 +156,10 @@ char* parse(char* input) {
 				}
 				input[i] = (input[i] == '+'? '|': '_');
 				last_unary = 1;
+				if (input[i] == '|') {
+					i++;
+					continue;
+				}
 			}
 
 			if (add_to_str(&i, &buf, input)) 

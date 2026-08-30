@@ -18,7 +18,15 @@ char node_type(node* n) {
 		case MULT:
 			return '*';
 			break;
+
+		case BIG_MULT:
+			return 'X';
+			break;
 		
+		case NEG:
+			return '_';
+			break;
+
 		default:
 			break;
 	}
@@ -26,88 +34,15 @@ char node_type(node* n) {
 }
 
 node*   get_tree(char* exp) {
-	char** letters = ft_split(exp, ' ');
-	if (!letters) {
-		error("Memory allocation failed");
+	node** partial = calloc((ft_strlen(exp) * 2), sizeof(node*));
+	if (!partial)
 		return NULL;
-	}
-
-	if (!ft_splitlen(letters)) {
-		error("One side is empty");
-		free(letters);
-		return NULL;
-	}
-
-	node** partial = calloc((ft_splitlen(letters) * 2), sizeof(node*));
-	if (!partial) {
-		free_split(letters);
-		return NULL;
-	}
 	ft_bzero(partial, sizeof(node*) * (ft_strlen(exp) * 2));
 
 	size_t i = 0;
 	size_t len;
-	//size_t bracket = 0;
-	while (letters[i]) {
-		len = ft_strlen(letters[i]);
-		//printf("%s\n", letters[i]);
-		if (!len) {
-			error("Bad empty weird symbol on equation");
-			free_split(letters);
-			free_node_arr(partial, free_node);
-			return NULL;
-		}
-		if (ft_isdigit(*(letters[i]))) {
-			if (create_num(letters[i], partial, i)) {
-				free_split(letters);
-				free_node_arr(partial, free_node);
-				return NULL;
-			}
-		} else if (*letters[i] == '+') {
-			if (create_sum(len, partial, i, letters[i])) {
-				free_split(letters);
-				free_node_arr(partial, free_node);
-				return NULL;
-			}
-		} else if (*letters[i] == '*') {
-			if (create_mul(len, partial, i, letters[i])) {
-				free_split(letters);
-				free_node_arr(partial, free_node);
-				return NULL;
-			}
-		} else if (*letters[i] == '-') {
-			switch (len) {
-				case 1:
-					if (create_sub(len, partial, i, letters[i] + 1)) {
-						free_split(letters);
-						free_node_arr(partial, free_node);
-						return NULL;
-					}
-					break;
-				
-				default:
-					if (create_num(letters[i], partial, i)) {
-						free_split(letters);
-						free_node_arr(partial, free_node);
-						return NULL;
-					}
-					break;
-			}
-		} else if (*letters[i] == 'x' || *letters[i] == 'X') {
-			if (create_monomial(letters[i], partial, i)) {
-				free_split(letters);
-				free_node_arr(partial, free_node);
-				return NULL;
-			}
-		} else {
-			bad_char("Bad symbol on equation", *letters[i]);
-			free_split(letters);
-			free_node_arr(partial, free_node);
-			return NULL;
-		}
-		i++;
-	}
-	free_split(letters);
+	size_t bracket = 0;
+
 	len = 0;
 	while (partial[len]) 
 		len++;
