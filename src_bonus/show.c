@@ -80,6 +80,8 @@ static void solve_quad(pol* p) {
 		if (d != 0) {
 			print_solution(d, 'x');
 			printf(" - ");
+		} else {
+			printf("-");
 		}
 		printf("%g", r / (2 * a));
 		printf("i\n");

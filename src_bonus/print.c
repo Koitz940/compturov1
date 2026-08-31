@@ -47,3 +47,7 @@ void show_pol(pol* p) {
         printf("0");
     }
 }
+
+void show_expr(node* p) {
+	
+}

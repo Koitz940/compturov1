@@ -34,7 +34,7 @@ pol* get_equal_zero(char* string) {
     }
     node* right = get_tree(r);
     if (!right) {
-        free(left);
+        free_node(left);
         return NULL;
     }
 

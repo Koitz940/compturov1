@@ -12,15 +12,19 @@
 # include <ctype.h>
 # include <limits.h>
 
-# define DELTA = (int)(-12652)
+# define DELTA (int)(-12652)
+# define PI 3.14159265358979323846
 
 enum expr {
     POL,
     SUM,
 	SUB,
     MULT,
+	DIV,
 	BIG_MULT,
 	NEG,
+	SOM,
+	EXP,
 };
 
 enum {
@@ -82,11 +86,11 @@ void    print_solution(double sol, int symbol);
 int		get_num(char* str, double* num);
 int		get_exp(char* str, size_t* num);
 size_t	strtosize(const char *nptr, char **endptr);
-int		create_num(char* str, node** partial, size_t i);
-int		create_mul(size_t len, node** partial, size_t i, char* str);
-int		create_sum(size_t len, node** partial, size_t i, char* str);
-int		create_sub(size_t len, node** partial, size_t i, char* str);
-int		create_monomial(char* str, node** partial, size_t i);
+int		create_op(node** partial, size_t i, char op);
+int		create_monomial(node** partial, size_t i);
+int 	create_num(char* str, node** partial, size_t i);
+int		create_const(node** partial, size_t i, double c);
+
 
 //error
 void    error(char* reason);
@@ -95,6 +99,7 @@ void	bad_char(char* reason, char c);
 //Binary trees
 node*	copy_node(node* n);
 char	node_type(node* n);
+char 	op_type(char c);
 
 //str
 int	add_to_str(size_t *i, t_str *str, char* raw);

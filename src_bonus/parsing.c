@@ -71,6 +71,7 @@ int append_num(char* input, size_t* i, t_str* buf) {
 }
 
 int append_point(char* input, size_t* i, t_str* buf) {
+	add_char(buf, '0');
 	if (!isdigit(input[*i + 1])) {
 		free(buf->str);
 		error("I am NOT accepting `.' as a shorthand for 0.0, and I shouldn't accept 0. or .0 either");
@@ -82,8 +83,8 @@ int append_point(char* input, size_t* i, t_str* buf) {
 char* parse(char* input) {
 	t_str buf;
 	size_t bracket = 0;
+	int next_unary = 1;
 	int last_op = 1;
-	int last_unary = 0;
 
 	buf.str = calloc(1000, sizeof(char));
 	buf.capacity = 1000;
@@ -101,26 +102,60 @@ char* parse(char* input) {
 			if (append_num(input, &i, &buf))
 				return NULL;
 
+			next_unary = 0;
 			last_op = 0;
-			last_unary = 0;
+
 		} 
 
 		else if (input[i] == '.') {
 			if (append_point(input, &i, &buf))
 				return NULL;
 
+			next_unary = 0;
 			last_op = 0;
-			last_unary = 0;
 		}
 		
-		else if (isop(input[i]) || input[i] == '(') {
+		else if (isop(input[i])) {
+			if (last_op) {
+				bad_char("Unexpected operator", input[i]);
+				free(buf.str);
+				return NULL;
+			}
+
 			if (add_to_str(&i, &buf, input)) 
 				return NULL;
 
-			if (input[i - 1] == '(')
-				bracket++;
+			while (isspace(input[i]))
+				i++;
+
+			if (!input[i] || input[i] == '=' || input[i] == ')') {
+				bad_char("expression ends on operator, delimiter is", input[i]);
+				free(buf.str);
+				return NULL;
+			}
+
+			next_unary = 0;
 			last_op = 1;
-			last_unary = 0;
+		}
+
+		else if (input[i] == '(') {
+
+			if (add_char(&buf, '|') || add_char(&buf, ' ') || add_to_str(&i, &buf, input)) 
+				return NULL;
+
+			bracket++;
+
+			while (isspace(input[i]))
+				i++;
+
+			if (!input[i] || input[i] == '=') {
+				bad_char("expression ends on bracket, delimiter is", input[i]);
+				free(buf.str);
+				return NULL;
+			}
+
+			next_unary = 1;
+			last_op = 1;
 		} 
 
 		else if (isvar(input[i]) || isspecialnum(input[i])) {
@@ -131,7 +166,7 @@ char* parse(char* input) {
 				return NULL;
 			
 			i++;
-			last_op = 0;
+			next_unary = 0;
 
 			while (isspace(input[i]))
 				i++;
@@ -144,27 +179,39 @@ char* parse(char* input) {
 					return NULL;
 			}
 
-			last_unary = 0;
+			last_op = 0;
 		}
 
 		else if (isespop(input[i])) {
-			if (last_op) {
-				if (last_unary) {
-					bad_char("Multiple unary operators in a row, unexpected sign", input[i]);
+			if (next_unary) {
+				input[i] = (input[i] == '+'? '|': '_');
+
+				if (add_to_str(&i, &buf, input)) 
+					return NULL;
+				
+				while (isspace(input[i]))
+					i++;
+				
+				if (!input[i] || input[i] == '=' || input[i] == ')') {
+					bad_char("expression ends on unary + or -, delimiter is", input[i]);
 					free(buf.str);
 					return NULL;
 				}
-				input[i] = (input[i] == '+'? '|': '_');
-				last_unary = 1;
-				if (input[i] == '|') {
-					i++;
-					continue;
-				}
+
 			}
 
-			if (add_to_str(&i, &buf, input)) 
-				return NULL;
+			else {
+				if (last_op) {
+					bad_char("Unexpected operator", input[i]);
+					free(buf.str);
+					return NULL;
+				}
+
+				if (add_to_str(&i, &buf, input)) 
+					return NULL;
+			}
 			
+			next_unary = 0;
 			last_op = 1;
 		} 
 
@@ -190,7 +237,8 @@ char* parse(char* input) {
 				if (add_char(&buf, 'X')) 
 					return NULL;
 			}
-			last_unary = 0;
+			next_unary = 0;
+			last_op = 0;
 		} 
 
 		else if (input[i] == '=') {
@@ -202,7 +250,8 @@ char* parse(char* input) {
 				free(buf.str);
 				return (NULL);
 			}
-			last_unary = 0;
+			next_unary = 1;
+			last_op = 1;
 		}
 
 		else {

@@ -26,14 +26,14 @@ int get_exp(char* str, size_t* num) {
 	char* endptr;
 
     errno = 0;
-    *num = strtod(str, &endptr);
+    *num = strtosize(str, &endptr);
 
 	if (endptr == str) {
         error("No conversion could be performed");
         return 1;
     } 
     else if (errno == ERANGE) {
-        error("Value out of range for a double");
+        error("Value out of range for an exponent");
         return 1;
     } 
     else if (*endptr != '\0') {
