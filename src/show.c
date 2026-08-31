@@ -43,8 +43,11 @@ static void solve_quad(pol* p) {
 			a = p->poly[1];
 			b = p->poly[0];
 			break;
-		case 3:
+
+		case 2:
 			a = p->poly[0];
+			break;
+
 		default:
 			break;
 	}
@@ -127,4 +130,5 @@ void    show_results(pol* p) {
             printf("Resulted polynomial is of degree %lu, which is greater than 4, there is no closed solution for polynomials of degree 5 or higher, lookup Galois Theory for more info\n", p->deg);
             break;
     }
+
 }

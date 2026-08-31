@@ -118,4 +118,7 @@ int isvalidnum(char c);
 int accepts_implied(char c);
 int isspecialnum(char c);
 
+//solving cubic polynomial adventure
+void solve_cub(pol* p);
+
 #endif

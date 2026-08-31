@@ -43,8 +43,11 @@ static void solve_quad(pol* p) {
 			a = p->poly[1];
 			b = p->poly[0];
 			break;
-		case 3:
+
+		case 2:
 			a = p->poly[0];
+			break;
+
 		default:
 			break;
 	}
@@ -116,7 +119,7 @@ void    show_results(pol* p) {
             break;
 
         case 3:
-            printf("Resulted a cubic polynomial, implemented in bonus, why? I don't even know myself\n");
+            solve_cub(p);
             break;
         
         case 4:

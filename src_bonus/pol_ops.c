@@ -309,5 +309,9 @@ pol* pol_exp(pol* p, pol* g) {
 		res = monomial(0, exp);
 	}
 
+	if (res) {
+		correct_degree(res);
+	}
+
 	return res;
 }
