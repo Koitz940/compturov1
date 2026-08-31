@@ -1,6 +1,6 @@
 #include "computorv1_bonus.h"
 
-pol* get_equal_zero(char* string) {
+pol* get_equal_zero(char* string, int* status) {
     size_t i = 0;
     size_t len = ft_strlen(string);
     char* l = NULL;
@@ -36,6 +36,7 @@ pol* get_equal_zero(char* string) {
         show_pol(p);
         free_pol(p);
         printf("\n");
+        *status = 1;
         return NULL;
     }
 

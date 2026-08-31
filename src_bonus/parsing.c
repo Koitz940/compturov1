@@ -190,21 +190,18 @@ char* parse(char* input) {
 				if (input[i] != '|') {
 					if (add_to_str(&i, &buf, input)) 
 					return NULL;
-				} else {
-					i++;
-					while (isspace(input[i]))
-						i++;
-					if (!input[i] || input[i] == '=' || input[i] == ')') {
-						bad_char("expression ends on unary + or -, delimiter is", input[i]);
-						free(buf.str);
-						return NULL;
-					}
-					continue;
-				}
-				
+				} 
+
+				i++;
 				while (isspace(input[i]))
 					i++;
+				if (!input[i] || input[i] == '=' || input[i] == ')') {
+					bad_char("expression ends on unary + or -, delimiter is", input[i]);
+					free(buf.str);
+					return NULL;
+				}
 
+				continue;
 			}
 
 			else {
@@ -216,6 +213,14 @@ char* parse(char* input) {
 
 				if (add_to_str(&i, &buf, input)) 
 					return NULL;
+
+				while (isspace(input[i]))
+					i++;
+				if (!input[i] || input[i] == '=' || input[i] == ')') {
+					bad_char("expression ends on binary + or -, delimiter is", input[i]);
+					free(buf.str);
+					return NULL;
+				}
 			}
 			
 			next_unary = 0;

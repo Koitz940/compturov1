@@ -113,6 +113,11 @@ static void free_both(node** list, char* tmp) {
 node*   get_tree(char* exp) {
 	size_t len = ft_strlen(exp);
 
+	if (!len) {
+		error("Empty expression found");
+		return NULL;
+	}
+
 	node** list = calloc((len * 2), sizeof(node*));
 	if (!list) {
 		error("Memory allocation failed");

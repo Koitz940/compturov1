@@ -52,7 +52,7 @@ typedef struct node {
 }   node;
 
 //General code flow
-pol*    get_equal_zero(char* string);
+pol* get_equal_zero(char* string, int* status);
 node*	get_tree(char* exp);
 pol*    expand(node* tree);
 node*	compress(node** list);

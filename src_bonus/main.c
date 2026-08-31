@@ -33,9 +33,12 @@ int main(int argc, char** argv) {
 	free(expression);
 	if (!final)
 		return FAILURE;
-	printf("%s\n", final);
-    expanded = get_equal_zero(final);
+	//printf("%s\n", final);
+	int status = 0;
+    expanded = get_equal_zero(final, &status);
 	free(final);
+	if (status) 
+		return 0;
     if (!expanded)
         return FAILURE;
     show_results(expanded);
