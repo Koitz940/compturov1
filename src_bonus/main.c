@@ -1,6 +1,6 @@
 #include "computorv1_bonus.h"
 
-/* int main(int argc, char** argv) {
+int main(int argc, char** argv) {
     char* expression;
     pol* expanded;
 	char* final;
@@ -29,19 +29,20 @@
 		return FAILURE;
 	}
 
-	final = correct(expression);
+	final = parse(expression);
 	free(expression);
 	if (!final)
 		return FAILURE;
-    expanded = get_equal_zero(expression);
-	free(expression);
+	printf("%s\n", final);
+    expanded = get_equal_zero(final);
+	free(final);
     if (!expanded)
         return FAILURE;
     show_results(expanded);
 	free_pol(expanded);
-} */
+}
 
-int main(int argc, char** argv) {
+/* int main(int argc, char** argv) {
 	char* expression;
 	char* final;
 
@@ -78,4 +79,4 @@ int main(int argc, char** argv) {
 		return FAILURE;
 	printf("%s\n", final);
 	free(final);
-}
+} */

@@ -225,3 +225,89 @@ pol *pol_copy(pol *p)
 	res->poly = poly;
 	return res;
 }
+
+static pol* pol_one() {
+	return monomial(0, 1.);
+}
+
+double safe_pow(double base, double exp, int *error_status) {
+    errno = 0;
+    double result = powf(base, exp);
+
+    *error_status = 0;
+
+    if (errno == EDOM || errno == ERANGE) {
+        *error_status = errno;
+        return result;
+    }
+
+    if (isnan(result)) {
+        *error_status = EDOM;
+    } else if (isinf(result)) {
+        *error_status = ERANGE;
+    }
+
+    return result;
+}
+
+pol* pol_exp(pol* p, pol* g) {
+	pol* res = NULL;
+	pol* tmp = NULL;
+	double exp;
+	size_t intexp;
+	int status = 0;
+
+	if (g->deg) {
+		error("Exponet by non constant detected, not implemented, it is: ");
+		show_pol(g);
+		printf("\n");
+	}
+
+	else if (p->deg) {
+		if (round(g->poly[0]) != g->poly[0]) {
+			error("Exponet non constant by non whole exponent, not implemented");
+			return NULL;
+		}
+
+		else if (g->poly[0] < 0.0) {
+			error("Exponet non constant by negative exponent, not implemented");
+			return NULL;
+		}
+
+		else if (g->poly[0] > (double)SIZE_MAX) {
+			error("too big of an exponent, not implemented");
+			return NULL;
+		}
+
+		intexp = (size_t)(round(g->poly[0]));
+
+		res = pol_one();
+		if (!res) {
+			return NULL;
+		}
+
+		while (intexp) {
+			tmp = pol_mul(res, p);
+			if (!tmp) {
+				free_pol(res);
+				return NULL;
+			}
+
+			free_pol(res);
+			res = tmp;
+			intexp--;
+		}
+	}
+
+	else {
+		exp = safe_pow(p->poly[0], g->poly[0], &status);
+		if (status) {
+			error("Bad exponentiation");
+			printf("%g ^ %g\n", p->poly[0], g->poly[0]);
+		}
+
+		res = monomial(0, exp);
+	}
+
+	return res;
+}

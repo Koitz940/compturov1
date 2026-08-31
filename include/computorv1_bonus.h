@@ -68,6 +68,7 @@ pol*    pol_sum(pol* p, pol* g);
 pol*    pol_sub(pol* p, pol* g);
 pol*    pol_neg(pol* p);
 pol*    pol_mul(pol* p, pol* g);
+pol*	pol_exp(pol* p, pol* g);
 
 pol*    pol_sum_free(pol* p, pol* g);
 pol*    pol_sub_free(pol* p, pol* g);
@@ -91,7 +92,6 @@ int		create_monomial(node** partial, size_t i);
 int 	create_num(char* str, node** partial, size_t i);
 int		create_const(node** partial, size_t i, double c);
 
-
 //error
 void    error(char* reason);
 void	bad_char(char* reason, char c);
@@ -99,7 +99,7 @@ void	bad_char(char* reason, char c);
 //Binary trees
 node*	copy_node(node* n);
 char	node_type(node* n);
-char 	op_type(char c);
+enum expr op_type(char c);
 
 //str
 int	add_to_str(size_t *i, t_str *str, char* raw);

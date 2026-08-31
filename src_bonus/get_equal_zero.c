@@ -12,7 +12,7 @@ pol* get_equal_zero(char* string) {
                 error("Invalid left hand side");
                 return NULL;
             }
-            string[i - 1] = 0;
+            string[i] = 0;
             if (string[i + 1] != ' ') {
                 error("Invalid right hand side");
                 return NULL;
@@ -24,7 +24,18 @@ pol* get_equal_zero(char* string) {
         i++;
     } 
     if (!l || !r) {
-        error("NO = sign given, not an equation");
+        printf("NO = sign given, will simply simplify the expression\n");
+        node* exp = get_tree(string);
+        if (!exp)
+            return NULL;
+        printf("Reduced form: ");
+        pol* p = expand(exp);
+        free_node(exp);
+        if (!p)
+            return NULL;
+        show_pol(p);
+        free_pol(p);
+        printf("\n");
         return NULL;
     }
 

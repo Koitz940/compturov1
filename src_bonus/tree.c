@@ -45,7 +45,7 @@ char node_type(node* n) {
 	return 'a';
 }
 
-char op_type(char c) {
+enum expr op_type(char c) {
 	switch (c)
 	{	
 		case '+':
@@ -109,9 +109,6 @@ static void free_both(node** list, char* tmp) {
 	free(tmp);
 }
 
-static int isnum(node* n) {
-	return n->type == POL || n->type == SOM || n->type == NEG;
-}
 
 node*   get_tree(char* exp) {
 	size_t len = ft_strlen(exp);
@@ -149,6 +146,8 @@ node*   get_tree(char* exp) {
 			ft_bzero(tmp, len + 1);
 			i++;
 
+			elem++;
+
 			continue;
 		}
 
@@ -175,7 +174,7 @@ node*   get_tree(char* exp) {
 
 		else if (exp[i] == '(') {
 			bracket = 1;
-			i++;
+			i += 2;
 
 			for (size_t j = 0; bracket; j++) {
 				tmp[j] = exp[i];
@@ -188,6 +187,8 @@ node*   get_tree(char* exp) {
 				i++;
 			}
 
+			tmp[ft_strlen(tmp) - 1] = 0; 
+
 			n = get_tree(tmp);
 			if (!n) {
 				free_both(list, tmp);
@@ -198,6 +199,7 @@ node*   get_tree(char* exp) {
 
 			ft_bzero(tmp, len + 1);
 			i++;
+			elem++;
 
 			continue;
 		}
@@ -224,38 +226,13 @@ node*   get_tree(char* exp) {
 		return NULL;
 	}
 
-	i = 0;
-	while (list[i]) {
-		if (list[i]->type == NEG || list[i]->type == SOM) {
-			list[i]->right = list[i+1];
-			for (size_t j = i + 2; list[j]; j++)
-				list[j - 1] = list[j];
-		}
-		i++;
+/* 	for (int j = 0; list[j]; j++) {
+		printf("%c ", node_type(list[j]));
 	}
+	printf("\n"); */
 
-	if (i % 2 == 0) {
-		error("Final element count turned out even, something is wrong with the expression");
-		free_node_arr(list, free_node);
-		return NULL;
-	}
-
-	for (size_t j = 0; j + 1 < i; j += 2) {
-		if (!(isnum(list[j]) && !isnum(list[j + 1]))) {
-			free_node_arr(list, free_node);
-			error("Bad expression, found 2 numbers/x/X/operations in a row");
-			return NULL;
-		}
-	}
-
-	if (!isnum(list[i - 1])) {
-		free_node_arr(list, free_node);
-		char c = node_type(list[i - 1]);
-		printf("Error: Bad expression, expected number or x/X for last element, found: %c\n", c);
-		return NULL;
-	}
-	
 	node* res = compress(list);
+	//printf("\n");
 	free(list);
 	return res;
 
@@ -301,58 +278,95 @@ node*	compress(node** list) {
 	while (list[len]) 
 		len++;
 
-	int i = len - 2;
+	int i = len - 1;
 	node* n = NULL;
 
 	while (i > 0) {
+		//printf("%i+\n", i);
 		if (list[i]->type == SUM || list[i]->type == SUB) {
 			n = list[i];
+			if (n->right) {
+				i--;
+				continue;
+			}
 			list[i] = NULL;
 			//printf("%c\n", node_type(n));
 			n->left = compress(list);
 			n->right = compress(list + i + 1);
 			return n;
 		}
-		i -= 2;
+		i--;
 	}
 
 	i = len - 2;
 	while (i > 0) {
+		//printf("%i*\n", i);
 		if (list[i]->type == MULT || list[i]->type == DIV) {
 			n = list[i];
+			if (n->right) {
+				i--;
+				continue;
+			}
 			list[i] = NULL;
 			//printf("%c\n", node_type(n));
 			n->left = compress(list);
 			n->right = compress(list + i + 1);
 			return n;
 		}
-		i -= 2;
+		i--;
 	}
 
 	i = len - 2;
 	while (i > 0) {
+		//printf("%iX\n", i);
 		if (list[i]->type == BIG_MULT) {
 			n = list[i];
+			if (n->right) {
+				i--;
+				continue;
+			}
 			list[i] = NULL;
 			//printf("%c\n", node_type(n));
 			n->left = compress(list);
 			n->right = compress(list + i + 1);
 			return n;
 		}
-		i -= 2;
+		i--;
+	}
+
+	i = len - 2;
+	while (i >= 0) {
+		//printf("%i_\n", i);
+		if (list[i]->type == NEG || list[i]->type == SOM) {
+			n = list[i];
+			if (n->right) {
+				i--;
+				continue;
+			}
+			list[i] = NULL;
+			//printf("%c\n", node_type(n));
+			n->right = compress(list + i + 1);
+			return n;
+		}
+		i--;
 	}
 
 	i = len - 2;
 	while (i > 0) {
+		//printf("%i^\n", i);
 		if (list[i]->type == EXP) {
 			n = list[i];
+			if (n->right) {
+				i--;
+				continue;
+			}
 			list[i] = NULL;
 			//printf("%c\n", node_type(n));
 			n->left = compress(list);
 			n->right = compress(list + i + 1);
 			return n;
 		}
-		i -= 2;
+		i--;
 	}
 
 	n = *list;
@@ -370,13 +384,26 @@ pol*    expand(node* tree) {
 		res = pol_copy(tree->p);
 		return res;
 	}
-	pol* l = expand(tree->left);
-	if (!l)
-		return NULL;
 
 	pol* r = expand(tree->right);
-	if (!r) {
-		free_pol(l);
+	if (!r)
+		return NULL;
+
+	if (tree->type == NEG) {
+		res = pol_neg(r);
+		free_pol(r);
+		return res;
+	}
+
+	if (tree->type == SOM) {
+		res = pol_copy(r);
+		free_pol(r);
+		return res;
+	}
+
+	pol* l = expand(tree->left);
+	if (!l){
+		free_pol(r);
 		return NULL;
 	}
 
@@ -392,6 +419,29 @@ pol*    expand(node* tree) {
 
 		case MULT:
 			res = pol_mul(l, r);
+			break;
+
+		case BIG_MULT:
+			res = pol_mul(l, r);
+			break;
+
+		case DIV:
+			if (r->deg) {
+				error("Division by non constant detected, not implemented, it is: ");
+				show_pol(r);
+			}
+			
+			else if (r->poly[0] == 0.0)
+				error("Division by 0 detected");
+
+			else {
+				r->poly[0] = 1. / r->poly[0];
+				res = pol_mul(l, r);
+			}
+			break;
+
+		case EXP:
+			res = pol_exp(l, r);
 			break;
 
 		default:

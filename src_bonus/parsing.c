@@ -75,6 +75,7 @@ int append_point(char* input, size_t* i, t_str* buf) {
 	if (!isdigit(input[*i + 1])) {
 		free(buf->str);
 		error("I am NOT accepting `.' as a shorthand for 0.0, and I shouldn't accept 0. or .0 either");
+		return FAILURE;
 	}
 
 	return append_num(input, i, buf);
@@ -140,7 +141,7 @@ char* parse(char* input) {
 
 		else if (input[i] == '(') {
 
-			if (add_char(&buf, '|') || add_char(&buf, ' ') || add_to_str(&i, &buf, input)) 
+			if (add_to_str(&i, &buf, input)) 
 				return NULL;
 
 			bracket++;
@@ -186,17 +187,23 @@ char* parse(char* input) {
 			if (next_unary) {
 				input[i] = (input[i] == '+'? '|': '_');
 
-				if (add_to_str(&i, &buf, input)) 
+				if (input[i] != '|') {
+					if (add_to_str(&i, &buf, input)) 
 					return NULL;
+				} else {
+					i++;
+					while (isspace(input[i]))
+						i++;
+					if (!input[i] || input[i] == '=' || input[i] == ')') {
+						bad_char("expression ends on unary + or -, delimiter is", input[i]);
+						free(buf.str);
+						return NULL;
+					}
+					continue;
+				}
 				
 				while (isspace(input[i]))
 					i++;
-				
-				if (!input[i] || input[i] == '=' || input[i] == ')') {
-					bad_char("expression ends on unary + or -, delimiter is", input[i]);
-					free(buf.str);
-					return NULL;
-				}
 
 			}
 
