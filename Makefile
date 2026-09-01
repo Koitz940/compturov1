@@ -1,7 +1,7 @@
 NAME = computorv1
 NAME_BONUS = computorv1_bonus
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -g
+CFLAGS = -Wall -Werror -Wextra
 RM = rm -f
 
 SRC 		= main.c free.c get_equal_zero.c pol_ops.c show.c tree.c print.c \
