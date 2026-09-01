@@ -201,6 +201,9 @@ char* parse(char* input) {
 					return NULL;
 				}
 
+				next_unary = 0;
+				last_op = 1;
+
 				continue;
 			}
 
