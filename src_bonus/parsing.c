@@ -99,6 +99,12 @@ char* parse(char* input) {
 	while (isspace(input[i]))
 		i++;
 	while (input[i]) {
+		if (last_op && (isop(input[i]) || isespop(input[i]))) {
+				bad_char("Unexpected operator", input[i]);
+				free(buf.str);
+				return NULL;
+			}
+
 		if (ft_isdigit(input[i])) {
 			if (append_num(input, &i, &buf))
 				return NULL;
@@ -207,6 +213,7 @@ char* parse(char* input) {
 					free(buf.str);
 					return NULL;
 				}
+
 
 				continue;
 			}
