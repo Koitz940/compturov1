@@ -155,6 +155,12 @@ char* parse(char* input) {
 				return NULL;
 			}
 
+			if (input[i] == ')') {
+				error("Empty bracket expression found");
+				free(buf.str);
+				return NULL;
+			}
+
 			next_unary = 1;
 			last_op = 1;
 		} 
@@ -187,22 +193,23 @@ char* parse(char* input) {
 			if (next_unary) {
 				input[i] = (input[i] == '+'? '|': '_');
 
-				if (input[i] != '|') {
-					if (add_to_str(&i, &buf, input)) 
-					return NULL;
-				} 
-
-				i++;
+				if (input[i] == '_') {
+					if (add_to_str(&i, &buf, input) || add_char(&buf, ' ')) 
+						return NULL;
+				} else
+					i++;
+				
 				while (isspace(input[i]))
 					i++;
+				
 				if (!input[i] || input[i] == '=' || input[i] == ')') {
 					bad_char("expression ends on unary + or -, delimiter is", input[i]);
 					free(buf.str);
 					return NULL;
 				}
 
-				next_unary = 0;
 				last_op = 1;
+				next_unary = 0;
 
 				continue;
 			}
