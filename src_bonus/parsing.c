@@ -208,11 +208,8 @@ char* parse(char* input) {
 					return NULL;
 				}
 
-				if (isop(input[i]) || isespop(input[i])) {
-					bad_char("Unexpected operator", input[i]);
-					free(buf.str);
-					return NULL;
-				}
+				last_op = 1;
+				next_unary = 0;
 
 				continue;
 			}
