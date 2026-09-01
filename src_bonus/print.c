@@ -47,3 +47,103 @@ void show_pol(pol* p) {
         printf("0");
     }
 }
+
+static int priority(enum expr l) {
+	switch (l) {
+		case POL:
+			return 0;
+			break;
+
+		case SUM:
+			return 1;
+			break;
+
+		case SUB:
+			return 1;
+			break;
+
+		case MULT:
+			return 2;
+			break;
+
+		case DIV:
+			return 2;
+			break;
+
+		case BIG_MULT:
+			return 2;
+			break;
+
+		case NEG:
+			return 3;
+			break;
+
+		case SOM:
+			return 3;
+			break;
+
+		case EXP:
+			return 4;
+			break;
+
+		default: 
+			break;
+	}
+
+	return -1;
+}
+
+static int bracket_left(enum expr l, enum expr cur) {
+	return priority(l) >= priority(cur); 
+}
+
+static int bracket_right(enum expr l, enum expr cur) {
+	return priority(l) >= priority(cur);
+}
+
+void print_tree(node* tree) {
+	char c;
+	int r;
+	int l;
+
+	if (tree->type == POL) {
+		show_pol(tree->p);
+	}
+
+	else if (tree->type == NEG || tree->type == SOM) {
+		r = bracket_right(tree->right->type, tree->type);
+		if (r) 
+			printf("(");
+		
+		c = node_type(tree);
+		printf("%c", c);
+		print_tree(tree->right);
+
+		if (r) 
+			printf(")");
+	}
+
+	else {
+		r = bracket_right(tree->right->type, tree->type);
+		l = bracket_left(tree->left->type, tree->type);
+
+		if (l) 
+			printf("(");
+		
+		print_tree(tree->left);
+
+		if (l)
+			printf(")");
+		
+
+		if (r) 
+			printf("(");
+		
+		c = node_type(tree);
+		printf("%c", c);
+		print_tree(tree->right);
+
+		if (r) 
+			printf(")");
+	}
+}

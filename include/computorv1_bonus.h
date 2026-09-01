@@ -82,6 +82,7 @@ pol*	pol_copy(pol* p);
 void    show_results(pol* p);
 void    show_pol(pol* p);
 void    print_solution(double sol, int symbol);
+void 	print_tree(node* tree);
 
 //reading equation
 int		get_num(char* str, double* num);

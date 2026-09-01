@@ -28,11 +28,11 @@ pol* get_equal_zero(char* string, int* status) {
         node* exp = get_tree(string);
         if (!exp)
             return NULL;
-        printf("Reduced form: ");
         pol* p = expand(exp);
         free_node(exp);
         if (!p)
             return NULL;
+		printf("Reduced form: ");
         show_pol(p);
         free_pol(p);
         printf("\n");
@@ -66,5 +66,13 @@ pol* get_equal_zero(char* string, int* status) {
 	free_node(left);
     free_node(right);
 
+	printf("Calculating: (");
+	show_pol(right_full);
+	printf(")");
+	printf(" - ");
+	printf("Calculating: (");
+	show_pol(left_full);
+	printf(")");
+	printf("\n");
     return pol_sub_free(left_full, right_full);
 }

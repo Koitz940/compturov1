@@ -396,6 +396,12 @@ pol*    expand(node* tree) {
 
 	if (tree->type == NEG) {
 		res = pol_neg(r);
+		printf("Calculating: -(");
+		show_pol(r);
+		printf(")\n");
+		show_pol(res);
+		printf("\n");
+		printf("\n");
 		free_pol(r);
 		return res;
 	}
@@ -415,38 +421,114 @@ pol*    expand(node* tree) {
 	switch (tree->type)
 	{
 		case SUM:
+			printf("Calculating: (");
+			show_pol(l);
+			printf(")");
+			printf(" + ");
+			printf("(");
+			show_pol(r);
+			printf(")\n");
 			res = pol_sum(l, r);
+			if (res) {
+				show_pol(res);
+				printf("\n");
+				printf("\n");
+			}
 			break;
 
 		case SUB:
+			printf("Calculating: (");
+			show_pol(l);
+			printf(")");
+			printf(" - ");
+			printf("(");
+			show_pol(r);
+			printf(")\n");
 			res = pol_sub(l, r);
+			if (res) {
+				show_pol(res);
+				printf("\n");
+				printf("\n");
+			}
 			break;
 
 		case MULT:
+			printf("Calculating: (");
+			show_pol(l);
+			printf(")");
+			printf(" * ");
+			printf("(");
+			show_pol(r);
+			printf(")\n");
 			res = pol_mul(l, r);
+			if (res) {
+				show_pol(res);
+				printf("\n");
+				printf("\n");
+			}
 			break;
 
 		case BIG_MULT:
+			printf("Calculating: (");
+			show_pol(l);
+			printf(")");
+			printf(" * ");
+			printf("(");
+			show_pol(r);
+			printf(")\n");
 			res = pol_mul(l, r);
+			if (res) {
+				show_pol(res);
+				printf("\n");
+				printf("\n");
+			}
 			break;
 
 		case DIV:
+			printf("Calculating: (");
+			show_pol(l);
+			printf(")");
+			printf(" / ");
+			printf("(");
+			show_pol(r);
+			printf(")");
 			if (r->deg) {
+				printf("\n");
 				error("Division by non constant detected, not implemented, it is: ");
 				show_pol(r);
 			}
 			
-			else if (r->poly[0] == 0.0)
+			else if (r->poly[0] == 0.0) {
+				printf("\n");
 				error("Division by 0 detected");
+			}
 
 			else {
 				r->poly[0] = 1. / r->poly[0];
 				res = pol_mul(l, r);
 			}
+			printf("\n");
+			if (res) {
+				show_pol(res);
+				printf("\n");
+				printf("\n");
+			}
 			break;
 
 		case EXP:
+			printf("Calculating: (");
+			show_pol(l);
+			printf(")");
+			printf(" ^ ");
+			printf("(");
+			show_pol(r);
+			printf(")\n");
 			res = pol_exp(l, r);
+			if (res) {
+				show_pol(res);
+				printf("\n");
+				printf("\n");
+			}
 			break;
 
 		default:
