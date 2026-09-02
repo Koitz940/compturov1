@@ -380,7 +380,59 @@ node*	compress(node** list) {
 	return n;
 }
 
-pol*    expand(node* tree) {
+static pol* show_step(pol* l, pol* r, char op, pol *(*func)(pol *, pol *)) {
+	printf("Calculating: (");
+	show_pol(l);
+	printf(")");
+	printf(" %c ", op);
+	printf("(");
+	show_pol(r);
+	printf(")\n");
+	pol* res = func(l, r);
+	if (res) {
+		show_pol(res);
+		printf("\n");
+		printf("\n");
+	}
+
+	return res;
+}
+
+static pol* show_div(pol* l, pol* r) {
+	pol* res = NULL;
+
+	printf("Calculating: (");
+	show_pol(l);
+	printf(")");
+	printf(" / ");
+	printf("(");
+	show_pol(r);
+	printf(")");
+	if (r->deg) {
+		printf("\n");
+		error("Division by non constant detected, not implemented, it is: ");
+		show_pol(r);
+	}
+	
+	else if (r->poly[0] == 0.0) {
+		printf("\n");
+		error("Division by 0 detected");
+	}
+
+	else {
+		r->poly[0] = 1. / r->poly[0];
+		res = pol_mul(l, r);
+	}
+	printf("\n");
+	if (res) {
+		show_pol(res);
+		printf("\n");
+		printf("\n");
+	}
+	return res;
+}
+
+pol*    expand(node* tree, int show) {
 	if (!tree)
 		return NULL;
 
@@ -390,19 +442,20 @@ pol*    expand(node* tree) {
 		return res;
 	}
 
-	pol* r = expand(tree->right);
+	pol* r = expand(tree->right, show);
 	if (!r)
 		return NULL;
 
 	if (tree->type == NEG) {
-		res = pol_neg(r);
 		printf("Calculating: -(");
 		show_pol(r);
 		printf(")\n");
-		show_pol(res);
-		printf("\n");
-		printf("\n");
-		free_pol(r);
+		res = pol_neg(r);
+		if (res) {
+			show_pol(res);
+			printf("\n");
+			printf("\n");
+		}
 		return res;
 	}
 
@@ -412,7 +465,7 @@ pol*    expand(node* tree) {
 		return res;
 	}
 
-	pol* l = expand(tree->left);
+	pol* l = expand(tree->left, show);
 	if (!l){
 		free_pol(r);
 		return NULL;
@@ -421,114 +474,60 @@ pol*    expand(node* tree) {
 	switch (tree->type)
 	{
 		case SUM:
-			printf("Calculating: (");
-			show_pol(l);
-			printf(")");
-			printf(" + ");
-			printf("(");
-			show_pol(r);
-			printf(")\n");
-			res = pol_sum(l, r);
-			if (res) {
-				show_pol(res);
-				printf("\n");
-				printf("\n");
-			}
+			if (show)
+				res = show_step(l, r, '+', pol_sum);
+			else
+				res = pol_sum(l, r);
 			break;
 
 		case SUB:
-			printf("Calculating: (");
-			show_pol(l);
-			printf(")");
-			printf(" - ");
-			printf("(");
-			show_pol(r);
-			printf(")\n");
-			res = pol_sub(l, r);
-			if (res) {
-				show_pol(res);
-				printf("\n");
-				printf("\n");
-			}
+			if (show)
+				res = show_step(l, r, '-', pol_sub);
+			else
+				res = pol_sub(l, r);
 			break;
 
 		case MULT:
-			printf("Calculating: (");
-			show_pol(l);
-			printf(")");
-			printf(" * ");
-			printf("(");
-			show_pol(r);
-			printf(")\n");
-			res = pol_mul(l, r);
-			if (res) {
-				show_pol(res);
-				printf("\n");
-				printf("\n");
-			}
+			if (show)
+				res = show_step(l, r, '*', pol_mul);
+			else
+				res = pol_mul(l, r);
 			break;
 
 		case BIG_MULT:
-			printf("Calculating: (");
-			show_pol(l);
-			printf(")");
-			printf(" * ");
-			printf("(");
-			show_pol(r);
-			printf(")\n");
-			res = pol_mul(l, r);
-			if (res) {
-				show_pol(res);
-				printf("\n");
-				printf("\n");
-			}
-			break;
-
-		case DIV:
-			printf("Calculating: (");
-			show_pol(l);
-			printf(")");
-			printf(" / ");
-			printf("(");
-			show_pol(r);
-			printf(")");
-			if (r->deg) {
-				printf("\n");
-				error("Division by non constant detected, not implemented, it is: ");
-				show_pol(r);
-			}
-			
-			else if (r->poly[0] == 0.0) {
-				printf("\n");
-				error("Division by 0 detected");
-			}
-
-			else {
-				r->poly[0] = 1. / r->poly[0];
+			if (show)
+				res = show_step(l, r, '*', pol_mul);
+			else
 				res = pol_mul(l, r);
-			}
-			printf("\n");
-			if (res) {
-				show_pol(res);
-				printf("\n");
-				printf("\n");
+
+			break;
+		case DIV:
+			if (show)
+				res = show_div(l, r);
+			else {
+				if (r->deg) {
+					printf("\n");
+					error("Division by non constant detected, not implemented, it is: ");
+					show_pol(r);
+				}
+				
+				else if (r->poly[0] == 0.0) {
+					printf("\n");
+					error("Division by 0 detected");
+				}
+
+				else {
+					r->poly[0] = 1. / r->poly[0];
+					res = pol_mul(l, r);
+				}
 			}
 			break;
 
 		case EXP:
-			printf("Calculating: (");
-			show_pol(l);
-			printf(")");
-			printf(" ^ ");
-			printf("(");
-			show_pol(r);
-			printf(")\n");
-			res = pol_exp(l, r);
-			if (res) {
-				show_pol(res);
-				printf("\n");
-				printf("\n");
-			}
+			if (show)
+				res = show_step(l, r, '^', pol_exp);
+			else
+				res = pol_exp(l, r);
 			break;
 
 		default:

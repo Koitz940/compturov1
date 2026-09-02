@@ -52,9 +52,9 @@ typedef struct node {
 }   node;
 
 //General code flow
-pol* get_equal_zero(char* string, int* status);
+pol* get_equal_zero(char* string, int* status, int show);
 node*	get_tree(char* exp);
-pol*    expand(node* tree);
+pol*    expand(node* tree, int show);
 node*	compress(node** list);
 
 //free me from this hell that I put mysef on, actually tho why am I here

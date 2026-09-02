@@ -9,16 +9,18 @@ To compile and run the program, use the following commands:
 - **Bonus Version (Full Features):**
   ```bash
   make bonus
-  ./computorv1_bonus [input]
+  ./computorv1_bonus [-s] [input]
   ```
 
 - **Standard Version (Full Features):**
     ```bash
     make
-    ./computorv1 [input]
+    ./computorv1 [-s] [input]
     ```
 
 (If the input argument is left empty, the program will prompt you to enter one.)
+
+Use -s for the thing to show what operations it is doing
 
 ## AI Disclosure
 Artificial Intelligence was used to make this README file and nothing else.

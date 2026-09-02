@@ -9,7 +9,6 @@
 # include <inttypes.h>
 # include <stddef.h>
 # include <stdint.h>
-
 # define DELTA = (int)(-12652)
 
 enum expr {

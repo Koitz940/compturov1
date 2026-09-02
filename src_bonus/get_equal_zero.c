@@ -1,6 +1,6 @@
 #include "computorv1_bonus.h"
 
-pol* get_equal_zero(char* string, int* status) {
+pol* get_equal_zero(char* string, int* status, int show) {
     size_t i = 0;
     size_t len = ft_strlen(string);
     char* l = NULL;
@@ -28,7 +28,7 @@ pol* get_equal_zero(char* string, int* status) {
         node* exp = get_tree(string);
         if (!exp)
             return NULL;
-        pol* p = expand(exp);
+        pol* p = expand(exp, show);
         free_node(exp);
         if (!p)
             return NULL;
@@ -50,13 +50,13 @@ pol* get_equal_zero(char* string, int* status) {
         return NULL;
     }
 
-    pol* left_full = expand(left);
+    pol* left_full = expand(left, show);
 	if (!left_full) {
 		free_node(left);
 		free_node(right);
 		return NULL;
 	}
-    pol* right_full = expand(right);
+    pol* right_full = expand(right, show);
 	if (!right_full) {
 		free_node(left);
 		free_node(right);
